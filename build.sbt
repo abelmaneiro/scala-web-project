@@ -2,6 +2,9 @@ name := """scala-web-project"""
 version := "1.0-SNAPSHOT"
 scalaVersion := "2.13.4"
 
+libraryDependencies ++=Seq("com.typesafe.play" %% "play" % "2.8.4")
+javaOptions += "-Dplay.editor=http://localhost:63342/api/file/?file=%s&line=%s"
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)  // Enable Play
 pipelineStages := Seq(digest)   // Making fingerprinting available
 
