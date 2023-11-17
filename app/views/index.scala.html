@@ -1,5 +1,5 @@
 @import model.SunInfo
-@(timeStr: String, sunInfo: SunInfo)
+@(timeStr: String, sunInfo: SunInfo, temp: Double)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,5 +13,6 @@
         <div>Current time: @timeStr</div>
         <div>Sunrise is: @sunInfo.sunrise</div>
         <div>SunSet is: @sunInfo.sunset</div>
+        <div>Current temperature is: @temp</div>
     </body>
 </html>
