@@ -4,40 +4,29 @@ import controllers.Assets.Asset
 
 import javax.inject._
 import play.api.mvc._
+import service.{SunService, WeatherService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-// import scala.concurrent.Future
 import play.api.libs.ws.WSClient
-import model.SunInfo
-
 
 class Application @Inject() (components: ControllerComponents, assets: Assets, ws: WSClient)
     extends AbstractController(components) {
+
+  private val sunService = new SunService(ws)
+  private val weatherService = new WeatherService(ws)
   def index: Action[AnyContent] = Action.async {
+    val lat = -33.8830
+    val lon = 151.2167
     val date = new java.util.Date()
-    val dateStr = new java.text.SimpleDateFormat().format(date)
-    val sunResponseF = ws.url("https://api.sunrise-sunset.org/json?lat=-33.8830&lng=151.2167&formatted=0").get()
-    // To obtain api key - https://openweathermap.org/appid
-    // https://api.openweathermap.org/data/2.5/weather?lat=-33.8830&lon=151.2167&unit&appid=d06f9fa75ebe72262aa71dc6c1dcd118&units=metric
-    val weatherResponseF = ws.url("https://api.openweathermap.org/data/2.5/weather?" +
-      "lat=-33.8830&lon=151.2167&unit&appid=d06f9fa75ebe72262aa71dc6c1dcd118&units=metric").get()
+    val dateTimeStr = new java.text.SimpleDateFormat("dd-mm-yyyy hh:mm:ss").format(date)
+
     for {
-      sunResponse <- sunResponseF
-      weatherResponse <- weatherResponseF
+      sunInfo <- sunService.getSunInfo(lat, lon)
+      temperature <- weatherService.getTemperature(lat, lon)
     } yield {
-      val weatherJSon = weatherResponse.json
-      val temp = (weatherJSon \ "main" \ "temp").as[Double]
-      val sunJson = sunResponse.json
-      val sunriseTimeStr = (sunJson \ "results" \ "sunrise").as[String]
-      val sunsetTimeStr = (sunJson \ "results" \ "sunset").as[String]
-      val sunriseTime = java.time.ZonedDateTime.parse(sunriseTimeStr)
-      val sunsetTime = java.time.ZonedDateTime.parse(sunsetTimeStr)
-      val formatter = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss").
-        withZone(java.time.ZoneId.of("Australia/Sydney"))
-      val sunInfo = SunInfo(sunriseTime.format(formatter), sunsetTime.format(formatter))
-      Ok(views.html.index(dateStr, sunInfo, temp))
+      Ok(views.html.index(dateTimeStr, sunInfo, temperature))
     }
-  //  Future.successful { Ok(views.html.index(dateStr, SunInfo("Rise", "Set"))) }
+  //  Future.successful { Ok(views.html.index(dateTimeStr, SunInfo("Rise", "Set", 99.9))) }
   }
 
   def versioned(path: String, file: Asset): Action[AnyContent] = assets.versioned(path, file)

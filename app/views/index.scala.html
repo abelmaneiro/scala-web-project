@@ -1,5 +1,5 @@
 @import model.SunInfo
-@(timeStr: String, sunInfo: SunInfo, temp: Double)
+@(dateTimeStr: String, sunInfo: SunInfo, temp: Double)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,7 +10,7 @@
     <body>
         <h1>Hello Play?</h1>
         <div>@{Math.random}</div>
-        <div>Current time: @timeStr</div>
+        <div>Current time: @dateTimeStr</div>
         <div>Sunrise is: @sunInfo.sunrise</div>
         <div>SunSet is: @sunInfo.sunset</div>
         <div>Current temperature is: @temp</div>
