@@ -2,18 +2,20 @@ import controllers.Application
 import play.api.ApplicationLoader.Context
 import play.api.{ApplicationLoader, BuiltInComponentsFromContext, Logger, LoggerConfigurator}
 import play.api.libs.ws.ahc.AhcWSComponents
-import play.api.mvc.DefaultControllerComponents
+import play.api.mvc.{DefaultControllerComponents, Filter}
 import router.Routes
 import play.api.routing.Router
 import com.softwaremill.macwire._
 import _root_.controllers.AssetsComponents
+import filters.StatsFilter
+import play.api
 import play.filters.HttpFiltersComponents
 import services.{SunService, WeatherService}
 
 import scala.concurrent.Future
 
 class AppApplicationLoader extends ApplicationLoader {
-  def load(context: Context) = {
+  def load(context: Context): api.Application = {
     LoggerConfigurator(context.environment.classLoader).foreach {loggerConfigurator =>
       loggerConfigurator.configure(context.environment)
     }
@@ -29,14 +31,16 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
 
   private val log = Logger(this.getClass)  // logger with this classname
 
-  override lazy val controllerComponents = wire[DefaultControllerComponents]
+  override lazy val controllerComponents: DefaultControllerComponents = wire[DefaultControllerComponents]
   lazy val prefix: String = "/"
   lazy val router: Router = wire[Routes]
-  lazy val applicationController = wire[Application]  // Application refers to ./app/controllers/Application
+  lazy val applicationController: Application = wire[Application]  // Application refers to ./app/controllers/Application
   // Wire in our classes
-  lazy val sunService = wire[SunService]  // Use wire instead of new SunService(wsClient)
-  lazy val weatherService = wire[WeatherService]
-
+  lazy val sunService: SunService = wire[SunService]  // Use wire instead of new SunService(wsClient)
+  lazy val weatherService: WeatherService = wire[WeatherService]
+  // Wire HTTP filter and overriding the httpFilters field from the BuiltInComponentsFromContext class
+  lazy val statsFilter: StatsFilter = wire[StatsFilter]
+  override lazy val httpFilters: Seq[Filter] = Seq(statsFilter)  // Explicit type of Filter
   // BuiltInComponentsFromContext trait allows adding a stop hook
   applicationLifecycle.addStopHook { () =>
 //    Future.successful{ log.info("The app is stopping") }  //
@@ -44,7 +48,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
     Future.successful(())  // returns successful future of ()
   }
 
-  val onStart = {  // Helps readability but don't really need to wrap in a val
+  val onStart: Unit = {  // Helps readability but don't really need to wrap in a val
     log.info("The app is about to start")
   }
 }
