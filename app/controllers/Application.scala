@@ -2,18 +2,19 @@ package controllers
 
 import controllers.Assets.Asset
 
-import javax.inject._
+// import javax.inject._ - no longer needed a not using Guice
 import play.api.mvc._
-import service.{SunService, WeatherService}
+import services.{SunService, WeatherService}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.ws.WSClient
+// import play.api.libs.ws.WSClient - no longer needed as injected in AppApplicationLoader
 
-class Application @Inject() (components: ControllerComponents, assets: Assets, ws: WSClient)
+
+class Application (components: ControllerComponents, assets: Assets,
+                   // Pass all dependencies as constructor parameters
+                   sunService: SunService, weatherService: WeatherService)
     extends AbstractController(components) {
 
-  private val sunService = new SunService(ws)
-  private val weatherService = new WeatherService(ws)
   def index: Action[AnyContent] = Action.async {
     val lat = -33.8830
     val lon = 151.2167

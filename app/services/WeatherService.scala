@@ -1,4 +1,4 @@
-package service
+package services
 
 import play.api.libs.ws.WSClient
 import scala.concurrent.ExecutionContext.Implicits.global

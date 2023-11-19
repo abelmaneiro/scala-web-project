@@ -12,7 +12,9 @@ libraryDependencies ++= Seq(   //
   jdbc,
   caffeine,
   ws,
-  guice
+  "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided" // marked as provided as only used at compile time
+//guice  // using macwire so removed.
 )
+//libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided" // marked as provided as only used at compile time & remove juice
 
 resolvers += "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"  // where sbt looks for libraries. Not needed only included as an example

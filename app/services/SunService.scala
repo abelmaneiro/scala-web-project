@@ -1,4 +1,4 @@
-package service
+package services
 
 import model.SunInfo
 import play.api.libs.ws.WSClient
