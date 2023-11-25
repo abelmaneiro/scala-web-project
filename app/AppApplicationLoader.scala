@@ -7,6 +7,8 @@ import router.Routes
 import play.api.routing.Router
 import com.softwaremill.macwire._
 import _root_.controllers.AssetsComponents
+import actors.StatsActor
+import akka.actor.{ActorRef, Props}
 import filters.StatsFilter
 import play.api
 import play.filters.HttpFiltersComponents
@@ -41,6 +43,8 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   // Wire HTTP filter and overriding the httpFilters field from the BuiltInComponentsFromContext class
   lazy val statsFilter: StatsFilter = wire[StatsFilter]
   override lazy val httpFilters: Seq[Filter] = Seq(statsFilter)  // Explicit type of Filter
+  // BuiltInComponentsFromContext trait allows creation and management of Actors
+  lazy val statsActor: ActorRef = actorSystem.actorOf(Props(wire[StatsActor]), StatsActor.name)
   // BuiltInComponentsFromContext trait allows adding a stop hook
   applicationLifecycle.addStopHook { () =>
 //    Future.successful{ log.info("The app is stopping") }  //
@@ -50,5 +54,6 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
 
   val onStart: Unit = {  // Helps readability but don't really need to wrap in a val
     log.info("The app is about to start")
+    statsActor ! StatsActor.Ping // starts the actor
   }
 }

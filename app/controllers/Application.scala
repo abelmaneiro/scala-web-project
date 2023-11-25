@@ -1,6 +1,12 @@
 package controllers
 
+import actors.StatsActor
 import controllers.Assets.Asset
+
+import java.util.concurrent.TimeUnit
+import akka.actor.ActorSystem
+import akka.util.Timeout
+import akka.pattern.ask
 
 // import javax.inject._ - no longer needed a not using Guice
 import play.api.mvc._
@@ -12,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class Application (components: ControllerComponents, assets: Assets,
                    // Pass all dependencies as constructor parameters
-                   sunService: SunService, weatherService: WeatherService)
+                   sunService: SunService, weatherService: WeatherService, actorSystem: ActorSystem) // pass ActorSystem
     extends AbstractController(components) {
 
   def index: Action[AnyContent] = Action.async {
@@ -24,8 +30,12 @@ class Application (components: ControllerComponents, assets: Assets,
     for {
       sunInfo <- sunService.getSunInfo(lat, lon)
       temperature <- weatherService.getTemperature(lat, lon)
+      noRequest <- {
+        implicit val timeout: Timeout = Timeout(5, TimeUnit.SECONDS)
+        (actorSystem.actorSelection(StatsActor.path) ? StatsActor.GetStats).mapTo[Int] // ? means Ask and returns a future
+      }
     } yield {
-      Ok(views.html.index(dateTimeStr, sunInfo, temperature))
+      Ok(views.html.index(dateTimeStr, sunInfo, temperature, noRequest))
     }
   //  Future.successful { Ok(views.html.index(dateTimeStr, SunInfo("Rise", "Set", 99.9))) }
   }
