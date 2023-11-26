@@ -10,10 +10,7 @@
     <body>
         <h1>Hello Play?</h1>
         <div>@{Math.random}</div>
-        <div>Current time: @dateTimeStr</div>
-        <div>Sunrise is: @sunInfo.sunrise</div>
-        <div>SunSet is: @sunInfo.sunset</div>
-        <div>Current temperature is: @temp</div>
-        <div>Requests: @noRequest</div>
+        <div id="reactView"></div>
     </body>
+    <script src="@routes.Application.versioned("complied/bundle.js")"></script>
 </html>
