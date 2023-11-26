@@ -1,0 +1,39 @@
+{
+  "name": "modern-web-scala-code-frontend",
+  "version": "1.0.0",
+  "description": "The frontend part of a sample Web app written for 'Modern Web Development with Scala",
+  "main": "index.js",
+  "scripts": {
+    "watch": "webpack --mode development --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abelmaneiro/scala-web-project.git"
+  },
+  "author": "Abel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abelmaneiro/scala-web-project/issues"
+  },
+  "homepage": "https://github.com/abelmaneiro/scala-web-project#readme",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^9.1.3",
+    "eslint": "^8.54.0",
+    "eslint-plugin-react": "^7.33.2",
+    "exports-loader": "^4.0.0",
+    "imports-loader": "^4.0.1",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
