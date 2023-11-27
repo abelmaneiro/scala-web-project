@@ -1,5 +1,4 @@
-@import model.SunInfo
-@(dateTimeStr: String, sunInfo: SunInfo, temp: Double, noRequest: Int)
+@(dateTimeStr: String)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -10,7 +9,8 @@
     <body>
         <h1>Hello Play?</h1>
         <div>@{Math.random}</div>
+        <div>@{dateTimeStr}</div>
         <div id="reactView"></div>
     </body>
-    <script src="@routes.Application.versioned("complied/bundle.js")"></script>
+    <script src="@routes.Application.versioned("compiled/bundle.js")"></script>
 </html>
