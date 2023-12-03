@@ -11,6 +11,8 @@ import actors.StatsActor
 import akka.actor.{ActorRef, Props}
 import filters.StatsFilter
 import play.api
+import play.api.db.{DBComponents, HikariCPComponents}
+import play.api.db.evolutions.{DynamicEvolutions, EvolutionsComponents}
 import play.filters.HttpFiltersComponents
 import scalikejdbc.config.DBs
 import services.{SunService, WeatherService}
@@ -30,7 +32,8 @@ class AppApplicationLoader extends ApplicationLoader {
 // They are meant to be added to your main AppComponents class when you need a particular built-in service.
 // E.g. AhcWSComponents trait gives us an implementation of WSClient
 class AppComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents
-  with AssetsComponents with HttpFiltersComponents {
+  with AssetsComponents with HttpFiltersComponents
+  with EvolutionsComponents with DBComponents with HikariCPComponents {
 
   private val log = Logger(this.getClass)  // logger with this classname
 
@@ -46,6 +49,8 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   override lazy val httpFilters: Seq[Filter] = Seq(statsFilter)  // Explicit type of Filter
   // BuiltInComponentsFromContext trait allows creation and management of Actors
   lazy val statsActor: ActorRef = actorSystem.actorOf(Props(wire[StatsActor]), StatsActor.name)
+  //  Needed for Play Evolutions
+  override lazy val dynamicEvolutions = new DynamicEvolutions
   // BuiltInComponentsFromContext trait allows adding a stop hook
   applicationLifecycle.addStopHook { () =>
 //    Future.successful{ log.info("The app is stopping") }  //
@@ -56,6 +61,7 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
 
   val onStart: Unit = {  // Helps readability but don't really need to wrap in a val
     log.info("The app is about to start")
+    applicationEvolutions
     DBs.setupAll()  // stop database
     statsActor ! StatsActor.Ping // starts the actor
   }
