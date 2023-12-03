@@ -25,12 +25,24 @@ class SunWeatherComponent extends React.Component {
   }
   
   render = () => {
-    return <div>
-      <div>Sunrise: {this.state.sunrise}</div>
-      <div>Sunset: {this.state.sunset}</div>
-      <div>Temperature: {this.state.temperature}</div>
-      <div>Requests: {this.state.noRequests}</div>
-    </div>
+    return <table><tbody>
+      <tr>
+        <td>Sunrise:</td>
+        <td>{this.state.sunrise}</td>
+      </tr>
+      <tr>
+        <td>Sunset:</td>
+        <td>{this.state.sunset}</td>
+      </tr>
+      <tr>
+        <td>Temperature:</td>
+        <td>{this.state.temperature}</td>
+      </tr>
+      <tr>
+        <td>Requests:</td>
+        <td>{this.state.noRequests}</td>
+      </tr>
+    </tbody></table>
   }
 }
 
