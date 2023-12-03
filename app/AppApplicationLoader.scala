@@ -12,6 +12,7 @@ import akka.actor.{ActorRef, Props}
 import filters.StatsFilter
 import play.api
 import play.filters.HttpFiltersComponents
+import scalikejdbc.config.DBs
 import services.{SunService, WeatherService}
 
 import scala.concurrent.Future
@@ -49,11 +50,13 @@ class AppComponents(context: Context) extends BuiltInComponentsFromContext(conte
   applicationLifecycle.addStopHook { () =>
 //    Future.successful{ log.info("The app is stopping") }  //
     log.info("The app is about to stop")
+    DBs.closeAll()   // start database
     Future.successful(())  // returns successful future of ()
   }
 
   val onStart: Unit = {  // Helps readability but don't really need to wrap in a val
     log.info("The app is about to start")
+    DBs.setupAll()  // stop database
     statsActor ! StatsActor.Ping // starts the actor
   }
 }

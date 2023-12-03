@@ -12,9 +12,21 @@ libraryDependencies ++= Seq(   //
   jdbc,
   caffeine,
   ws,
-  "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided" // marked as provided as only used at compile time
-//guice  // using macwire so removed.
+  "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided", // marked as provided as only used at compile time
+  "org.postgresql" % "postgresql" % "42.2.18",
+  "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "3.5.0",
+  "ch.qos.logback" % "logback-classic" % "1.2.3",
+  "de.svenkubiak" % "jBCrypt" % "0.4.1",
+  //guice  // using macwire so removed.
 )
 //libraryDependencies += "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided" // marked as provided as only used at compile time & remove juice
+//libraryDependencies += "org.postgresql" % "postgresql" % "42.2.18"
+//libraryDependencies ++= Seq(
+//  "org.scalikejdbc" %% "scalikejdbc" % "3.5.0",
+//  "org.scalikejdbc" %% "scalikejdbc-config" % "3.5.0",
+//  "ch.qos.logback" % "logback-classic" % "1.2.3",
+//)
+libraryDependencies += "de.svenkubiak" % "jBCrypt" % "0.4.1"
 
 resolvers += "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"  // where sbt looks for libraries. Not needed only included as an example
