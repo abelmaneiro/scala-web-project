@@ -30,7 +30,7 @@ class Application (components: ControllerComponents, assets: Assets,
   //  Future.successful { Ok(views.html.index(dateTimeStr, SunInfo("Rise", "Set", 99.9))) }
   }
 
-  def data = Action.async {
+  def data: Action[AnyContent] = Action.async {
     val lat = -33.8830
     val lon = 151.2167
     for {
@@ -43,6 +43,10 @@ class Application (components: ControllerComponents, assets: Assets,
     } yield {
       Ok(Json.toJson(CombinedData(sunInfo,temperature, noRequest)))
     }
+  }
+
+  def login: Action[AnyContent] = Action {
+    Ok(views.html.login())
   }
 
   def versioned(path: String, file: Asset): Action[AnyContent] = assets.versioned(path, file)
